@@ -56,5 +56,8 @@
   "bugs": {
     "url": "https://github.com/geut/splitter/issues"
   },
-  "homepage": "https://github.com/geut/splitter#readme"
+  "homepage": "https://github.com/geut/splitter#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }
