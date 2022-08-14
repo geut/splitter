@@ -1,0 +1,60 @@
+{
+  "name": "@geut/splitter",
+  "version": "0.0.1",
+  "description": "Split your data from one side, resemble from the other one",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./src/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "index.js"
+  ],
+  "scripts": {
+    "start": "node index.js",
+    "build": "tsup src/index.js",
+    "test": "uvu",
+    "posttest": "npm run lint",
+    "lint": "standard",
+    "prepublishOnly": "npm test && npm run build"
+  },
+  "dependencies": {
+    "streamx": "^2.11.1",
+    "varint": "^6.0.0"
+  },
+  "devDependencies": {
+    "standard": "^17.0.0",
+    "tsup": "^6.2.2",
+    "uvu": "^0.5.3"
+  },
+  "standard": {
+    "env": [
+      "node",
+      "browser"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geut/splitter.git"
+  },
+  "keywords": [
+    "stream",
+    "streamx",
+    "chunk",
+    "split"
+  ],
+  "author": {
+    "name": "GEUT",
+    "email": "contact@geutstudio.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/geut/splitter/issues"
+  },
+  "homepage": "https://github.com/geut/splitter#readme"
+}
