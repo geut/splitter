@@ -3,10 +3,47 @@ import * as assert from 'uvu/assert'
 import { Readable, Writable, Transform, pipeline } from 'streamx'
 import { Split, Merge } from '../src/index.js'
 
-const split = (chunkSize) => new Split({ chunkSize })
-const merge = (timeout) => new Merge({ timeout })
+const split = (opts) => new Split(opts)
+const merge = (opts) => new Merge(opts)
 
-test('basic', async () => {
+test('send the raw data if length <= chunkSize', async () => {
+  let result
+  let checkSize
+  const data = Buffer.from('123456789!')
+
+  const rs = new Readable({
+    read (cb) {
+      this.push(data)
+      this.push(null)
+      cb(null)
+    }
+  })
+
+  const ws = new Writable({
+    write (data, cb) {
+      result = Buffer.from(data).toString()
+      return cb(null)
+    }
+  })
+
+  const check = new Transform({
+    transform (data, cb) {
+      checkSize = data.length
+      this.push(data)
+      cb()
+    }
+  })
+
+  await new Promise((resolve, reject) => pipeline(rs, split(), check, merge(), ws, err => {
+    if (err) return reject(err)
+    resolve()
+  }))
+
+  assert.is(result, data.toString())
+  assert.is(checkSize, data.length)
+})
+
+test('split by 3 bytes', async () => {
   let result
 
   const rs = new Readable({
@@ -24,7 +61,7 @@ test('basic', async () => {
     }
   })
 
-  await new Promise((resolve, reject) => pipeline(rs, split(3), merge(), ws, err => {
+  await new Promise((resolve, reject) => pipeline(rs, split({ chunkSize: 3 }), merge({ chunkSize: 3 }), ws, err => {
     if (err) return reject(err)
     resolve()
   }))
@@ -67,9 +104,9 @@ test('merge: timeout', async () => {
     }
   })
 
-  const res = merge(500)
+  const res = merge({ chunkSize: 3, timeout: 500 })
 
-  const stream = new Promise((resolve, reject) => pipeline(rs, split(3), error, res, ws, err => {
+  const stream = new Promise((resolve, reject) => pipeline(rs, split({ chunkSize: 3 }), error, res, ws, err => {
     if (err) return reject(err)
     resolve()
   }))

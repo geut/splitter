@@ -61,8 +61,7 @@ export class Split extends Transform {
     let buf
     const id = idGenerate()
     if (data.length <= this._chunkSize) {
-      buf = encodePacket(data, id, 0, 1)
-      this.push(buf)
+      this.push(data)
     } else {
       let offset = 0
       let end = 0
