@@ -13,11 +13,16 @@ function concat (packet) {
 
 const sort = (a, b) => a.index - b.index
 
+const toBuffer = typeof Buffer !== 'undefined' ? data => Buffer.from(data) : null
+let map
+if (toBuffer) {
+  map = data => data ? toBuffer(data) : data
+}
+
 export class Merge extends Transform {
   constructor (opts = {}) {
     const { timeout = 5_000, ...streamOpts } = opts
-
-    super(streamOpts)
+    super({ map, ...streamOpts })
 
     this._timeout = timeout
     this._packets = new Map()

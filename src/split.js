@@ -48,11 +48,17 @@ function encodePacket (data, id, index, size) {
   return buf
 }
 
+const toBuffer = typeof Buffer !== 'undefined' ? data => Buffer.from(data) : null
+let map
+if (toBuffer) {
+  map = data => data ? toBuffer(data) : data
+}
+
 export class Split extends Transform {
   constructor (opts = {}) {
     const { chunkSize = 1024, ...streamOpts } = opts
 
-    super(streamOpts)
+    super({ map, ...streamOpts })
 
     this._chunkSize = chunkSize
   }
