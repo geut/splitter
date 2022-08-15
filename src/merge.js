@@ -15,11 +15,10 @@ const sort = (a, b) => a.index - b.index
 
 export class Merge extends Transform {
   constructor (opts = {}) {
-    const { chunkSize = 1024, timeout = 5_000, ...streamOpts } = opts
+    const { timeout = 5_000, ...streamOpts } = opts
 
     super(streamOpts)
 
-    this._chunkSize = chunkSize
     this._timeout = timeout
     this._packets = new Map()
   }
@@ -49,12 +48,8 @@ export class Merge extends Transform {
 
   _transform (data, cb) {
     try {
-      if (data.length <= this._chunkSize) {
-        this.push(data)
-      } else {
-        const buf = this._decodePacket(data)
-        if (buf) this.push(buf)
-      }
+      const buf = this._decodePacket(data)
+      if (buf) this.push(buf)
       cb(null)
     } catch (err) {
       cb(err)
