@@ -1,6 +1,6 @@
 {
   "name": "@geut/splitter",
-  "version": "0.0.2",
+  "version": "1.0.0",
   "description": "Split your data from one side, resemble from the other one",
   "type": "module",
   "main": "./dist/index.cjs",
